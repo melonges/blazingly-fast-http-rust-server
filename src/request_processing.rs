@@ -1,8 +1,8 @@
-use crate::status_headers::StatusHeader;
+
 use crate::system_utils::read_files;
-use std::fs::File;
+
 use std::io::BufRead;
-use std::io::{BufReader, Read, Write};
+use std::io::{BufReader, Write};
 use std::net::TcpStream;
 
 pub fn connection_processing(mut request: TcpStream) {
