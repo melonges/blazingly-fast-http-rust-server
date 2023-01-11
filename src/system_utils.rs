@@ -3,6 +3,13 @@ use std::io::BufReader;
 use std::io::Read;
 
 pub fn read_files(path: &str) -> FileStatus {
+    if path == "/" || path.is_empty() {
+        let mut contents = String::new();
+        BufReader::new(File::open("static/index.html").unwrap())
+            .read_to_string(&mut contents)
+            .unwrap();
+        return FileStatus::Exist(contents);
+    }
     let file = File::open(format!("static/{}", path));
     let mut contents = String::new();
     match file {
