@@ -1,4 +1,4 @@
-use crate::cache::{self, Cache};
+use crate::cache::{Cache};
 use crate::config::Config;
 use crate::status_headers::HttpResponse;
 use crate::system_utils::{read_files, FileStatus};
