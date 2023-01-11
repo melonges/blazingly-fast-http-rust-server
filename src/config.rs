@@ -1,12 +1,12 @@
 use crate::{DEFAULT_CACHE_SIZE, DEFAULT_PORT};
 
 pub struct Config {
-    pub port: u32,
-    pub cache_size: u32,
+    pub port: u64,
+    pub cache_size: u64,
 }
 
 impl Config {
-    pub fn parse_config(args: &[String]) -> Config {
+    pub fn parse_config(args: String) -> Config {
         if args.len() < 2 {
             Config {
                 port: DEFAULT_PORT,

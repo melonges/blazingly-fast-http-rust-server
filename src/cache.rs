@@ -3,35 +3,24 @@ use std::{
     hash::{Hash, Hasher},
 };
 
-use crate::status_headers::StatusHeader;
 use crate::system_utils::read_files;
+use crate::{status_headers::StatusHeader, DEFAULT_CACHE_SIZE};
 struct Cache {
-    map: Vec<String>,
+    vector: Vec<String>,
 }
 
 impl Cache {
     fn new(size: usize) -> Cache {
         Cache {
-            map: Vec::with_capacity(size),
+            vector: Vec::with_capacity(size),
         }
     }
 
-    fn get(&mut self, key: String) -> (StatusHeader, &String) {
-        let index = Cache::hash_to_index(&key);
-        let result = self.map.get(index);
-        match result {
-            Some(value) => (StatusHeader::Ok, value),
-            None => {
-                let resource = read_files(&key);
-                self.map.insert(index, resource.1);
-                (resource.0, self.map.get(index).unwrap())
-            }
-        }
-    }
+    fn get(&mut self, key: String) ->  {}
 
     fn hash_to_index(key: &String) -> usize {
         let mut hasher = DefaultHasher::new();
         key.hash(&mut hasher);
-        (hasher.finish() % 1000) as usize
+        (hasher.finish() & (DEFAULT_CACHE_SIZE - 1)) as usize
     }
 }
