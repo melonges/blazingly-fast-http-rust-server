@@ -3,24 +3,48 @@ use std::{
     hash::{Hash, Hasher},
 };
 
-use crate::system_utils::read_files;
-use crate::{status_headers::StatusHeader, DEFAULT_CACHE_SIZE};
-struct Cache {
-    vector: Vec<String>,
+use crate::config::Config;
+
+pub struct Cache {
+    vector: Vec<CacheItem>,
+}
+
+pub struct CacheItem {
+    key: String,
+    value: String,
 }
 
 impl Cache {
-    fn new(size: usize) -> Cache {
+    pub fn new(config: Config) -> Cache {
         Cache {
-            vector: Vec::with_capacity(size),
+            vector: Vec::with_capacity(config.cache_size),
         }
     }
 
-    fn get(&mut self, key: String) ->  {}
+    pub fn get(&self, key: String) -> Option<&CacheItem> {
+        let index = self.hash_key_to_index(&key);
+        let element = self.vector.get(index);
+        match element {
+            Some(value) => {
+                if value.key == key {
+                    Some(value)
+                } else {
+                    None
+                }
+            }
+            None => None,
+        }
+    }
 
-    fn hash_to_index(key: &String) -> usize {
+    pub fn insert(&mut self, key: String, value: String) {
+        let index = self.hash_key_to_index(&key);
+        let cache_item = CacheItem { key, value };
+        self.vector[index] = cache_item;
+    }
+
+    pub fn hash_key_to_index(&self, key: &String) -> usize {
         let mut hasher = DefaultHasher::new();
         key.hash(&mut hasher);
-        (hasher.finish() & (DEFAULT_CACHE_SIZE - 1)) as usize
+        (hasher.finish() as usize) % self.vector.capacity()
     }
 }
