@@ -34,8 +34,8 @@ impl BlazingFastTcpServer {
         }
     }
 
-    pub fn connection_processing(&self, mut request: TcpStream, cache: &mut Cache) {
-        let result = BufReader::new(&request).lines().next().unwrap().unwrap();
+    pub fn connection_processing(&self, mut stream: TcpStream, cache: &mut Cache) {
+        let result = BufReader::new(&stream).lines().next().unwrap().unwrap();
         let path = &result[5..result.len() - 9];
         let content = match cache.get(path) {
             Some(v) => HttpResponse::Ok(&v.value),
@@ -59,6 +59,6 @@ impl BlazingFastTcpServer {
             content.get_value().len(),
             content.get_value()
         );
-        request.write_all(response.as_bytes()).unwrap();
+        stream.write(response.as_bytes()).unwrap();
     }
 }
