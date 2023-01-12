@@ -1,7 +1,7 @@
+use crate::static_data::*;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
-
 pub fn read_files(path: &str) -> FileStatus {
     if path == "/" || path.is_empty() {
         let mut contents = String::new();
@@ -19,13 +19,9 @@ pub fn read_files(path: &str) -> FileStatus {
         }
         Err(e) => {
             if e.kind() == std::io::ErrorKind::NotFound {
-                let file = File::open("static/404.html").unwrap();
-                BufReader::new(file).read_to_string(&mut contents).unwrap();
-                FileStatus::NotFount(contents)
+                FileStatus::NotFount(NOT_FOUNT.to_string())
             } else {
-                let file = File::open("static/500.html").unwrap();
-                BufReader::new(file).read_to_string(&mut contents).unwrap();
-                FileStatus::InternalError(contents)
+                FileStatus::InternalError(SERVER_ERROR.to_string())
             }
         }
     }
