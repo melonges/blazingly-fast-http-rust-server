@@ -1,6 +1,6 @@
 use std::{path::Path, process};
 
-pub fn init() {
+pub fn check_default_files(current_path: &Path) {
     if !(Path::new("static/404.html").exists()
         && Path::new("static/500.html").exists()
         && Path::new("static/index.html").exists())
