@@ -1,7 +1,4 @@
-use std::{
-    collections::{hash_map::DefaultHasher, HashMap},
-    hash::{Hash, Hasher},
-};
+use std::collections::HashMap;
 
 use crate::config::Config;
 
@@ -19,13 +16,13 @@ pub struct LRUCache {
 }
 
 impl CacheItem {
-    fn new(key: String, value: String) -> CacheItem {
-        CacheItem {
+    fn new(key: String, value: String) -> Box<CacheItem> {
+        Box::new(CacheItem {
             key,
             value,
             prev: None,
             next: None,
-        }
+        })
     }
 }
 
@@ -33,8 +30,8 @@ impl LRUCache {
     pub fn new(config: &Config) -> LRUCache {
         let key = "0".to_string();
         let value = "0".to_string();
-        let mut left = Box::new(CacheItem::new(key, value));
-        let mut right = Box::new(CacheItem::new(key, value));
+        let mut left = CacheItem::new(key, value);
+        let mut right = CacheItem::new(key, value);
         left.next = Some(right);
         right.prev = Some(left);
         LRUCache {
@@ -58,7 +55,7 @@ impl LRUCache {
         if self.cache.get(&key).is_some() {
             self.cache.remove(&key);
         }
-        let cache_item = Box::new(CacheItem::new(key, value));
+        let cache_item = CacheItem::new(key, value);
         self.cache.insert(key, cache_item);
         self.insert(cache_item);
 
