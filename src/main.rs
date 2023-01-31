@@ -1,4 +1,4 @@
-use cache::Cache;
+use cache::LRUCache;
 use tcp_server::BlazingFastTcpServer;
 
 const DEFAULT_PORT: u64 = 7878;
@@ -12,11 +12,11 @@ mod system_utils;
 mod tcp_server;
 
 fn main() {
-    init::init();
+    //init::init();
     let args: String = std::env::args().collect();
     let config = config::Config::parse_config(&[args]);
     let super_fast_tcp_server = BlazingFastTcpServer::new(&config);
-    let cache = Cache::new(&config);
+    let cache = LRUCache::new(&config);
     println!("started on http://{IP}:{}", config.port);
     super_fast_tcp_server.run(cache);
 }

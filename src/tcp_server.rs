@@ -1,4 +1,4 @@
-use crate::cache::Cache;
+use crate::cache::LRUCache;
 use crate::config::Config;
 use crate::status_headers::HttpResponse;
 use crate::system_utils::{read_files, FileStatus};
@@ -23,7 +23,7 @@ impl BlazingFastTcpServer {
         }
     }
 
-    pub fn run(&self, mut cache: Cache) {
+    pub fn run(&self, mut cache: LRUCache) {
         for stream in self.server.incoming() {
             match stream {
                 Ok(stream) => self.connection_processing(stream, &mut cache),
@@ -34,7 +34,7 @@ impl BlazingFastTcpServer {
         }
     }
 
-    pub fn connection_processing(&self, mut stream: TcpStream, cache: &mut Cache) {
+    pub fn connection_processing(&self, mut stream: TcpStream, cache: &mut LRUCache) {
         let result = BufReader::new(&stream).lines().next().unwrap().unwrap();
         let path = &result[5..result.len() - 9];
         let content = match cache.get(path) {
